@@ -8,11 +8,11 @@
 ## Demo
 
 * To post a note:
-> $ curl -d '{"message": "hello world"}' -X POST -H "Content-Type: application/json" nw-elb-primary-730274181.us-west-2.elb.amazonaws.com/post
+> $ curl -d '{"message": "hello world"}' -X POST -H "Content-Type: application/json" nw-elb-primary-730274181.us-west-2.elb.amazonaws.com/post  
 > {"url": \<link\>}
 
 * To read:
-> $ curl -X GET \<link\>
+> $ curl -X GET \<link\>  
 > {"message": "hello world"}
 
 ## Instructions

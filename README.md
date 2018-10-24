@@ -19,6 +19,7 @@
 ```
 1. git clone https://github.com/mw123/note-whisperer.git
 2. cd note-whisperer/terraform
+3. set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY as environment variables
 3. terraform init
 4. terraform plan -var fellow_name=<IAM keypair prefix> (e.g. If the .pem file is named "mw-IAM-keypair.pem", then fellow_name=mw)
 5. terraform apply -var fellow_name=<IAM keypair prefix>

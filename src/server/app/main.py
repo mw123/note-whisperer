@@ -65,7 +65,7 @@ def post():
         db.session.add(new_msg)
         db.session.commit()
         
-        url = '/'.join('http:/',SERVER_HOST,'read',query.url_key)
+        url = '/'.join(['http:/',SERVER_HOST,'read',query.url_key])
         return jsonify({'url': url})
     else:
         return not_supported(request.headers['Content-Type'])
@@ -82,8 +82,8 @@ def read(url):
     db.session.commit()
 
     curr_time = datetime.utcnow()
-    if (curr_time - timestamp).total_seconds() > 3600:
-        return not_found()
+    #if (curr_time - timestamp).total_seconds() > 3600:
+    #    return not_found()
 
     return jsonify(message)
 

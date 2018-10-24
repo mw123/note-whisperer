@@ -24,7 +24,7 @@ resource "aws_subnet" "api_subnet" {
   }
   availability_zone = "${data.aws_availability_zones.all.names[0]}"
 }
-/*
+
 resource "aws_subnet" "db_subnet_az1" {
   cidr_block = "10.0.0.16/28"
   vpc_id = "${aws_vpc.nw_vpc.id}"
@@ -33,7 +33,7 @@ resource "aws_subnet" "db_subnet_az1" {
   }
   availability_zone = "${data.aws_availability_zones.all.names[1]}"
 }
-*/
+
 resource "aws_subnet" "db_subnet_az0" {
   cidr_block = "10.0.0.0/28"
   vpc_id = "${aws_vpc.nw_vpc.id}"
@@ -56,8 +56,8 @@ resource "aws_db_subnet_group" "rds_subnets" {
   name = "nw-rds-subnets"
   description = "RDS subnet group"
   subnet_ids = [
-    "${aws_subnet.db_subnet_az0.id}"]
-    /*"${aws_subnet.db_subnet_az1.id}"]*/
+    "${aws_subnet.db_subnet_az0.id}",
+    "${aws_subnet.db_subnet_az1.id}"]
     /*"${aws_subnet.db_subnet_az2.id}"]*/
 }
 

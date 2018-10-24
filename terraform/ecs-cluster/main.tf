@@ -53,8 +53,6 @@ resource "aws_launch_configuration" "ecs_instance" {
   user_data = <<EOF
 #!/bin/bash
 echo "ECS_CLUSTER=${var.name}" >> /etc/ecs/ecs.config
-yum install -y mysql
-mysql --host db.note-whisperer.com -u root -pnotewhisperer -e "CREATE DATABASE IF NOT EXISTS msg_db;"
 EOF
 
   # Important note: whenever using a launch configuration with an auto scaling

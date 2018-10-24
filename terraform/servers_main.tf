@@ -20,36 +20,25 @@ module "nw-cluster" {
   associate_public_ip_address = true
 }
 
-resource "aws_ecs_task_definition" "task" {
-  family = "kgs"
-  container_definitions = <<EOF
-[
-  {
-    "name": "kgs",
-    "image": "${var.ecr_url_kgs}:latest",
-    "cpu": 0,
-    "memory": 900,
-    "essential": true,
-    "portMappings": [
-      {
-        "containerPort": 5001,
-        "hostPort": 5001,
-        "protocol": "tcp"
-      }
-    ],
-    "environment": [
-      {
-        "DB_HOST": "${aws_route53_record.db.name}",
-        "DB_USER": "${aws_db_instance.nw_mysql.username}",
-        "DB_PASSWD": "${aws_db_instance.nw_mysql.password}",
-        "KEY_DB_NAME": "${aws_db_instance.nw_mysql.name}"
-      }
-    ]
-  }
-]
-EOF
-}
+module "kgs-task" {
+  source = "ecs-task"
 
+  name = "nw-kgs-task"
+  ecs_cluster_id = "${module.nw-cluster.ecs_cluster_id}"
+  image = "${var.ecr_url_kgs}"
+  image_version = "latest"
+  cpu = 0
+  memory = 900
+  container_port = 5001
+  host_port = 5001
+  desired_count = 1
+  num_env_vars = 5
+  env_vars = "${map("DB_HOST", "${aws_db_instance.nw_mysql.address}",
+                    "DB_USER", "${aws_db_instance.nw_mysql.username}",
+                    "DB_PASSWD", "${aws_db_instance.nw_mysql.password}",
+                    "KEY_DB_NAME", "${aws_db_instance.nw_mysql.name}",
+                    "MSG_DB_NAME", "msg_db")}"
+}
 
 module "server-service" {
   source = "ecs-service"
@@ -64,6 +53,14 @@ module "server-service" {
   host_port = 80
   desired_count = 1
   elb_name = "${aws_elb.nw_elb.id}"
+  num_env_vars = 6
+  env_vars = "${map("SERVER_HOST", "${aws_elb.nw_elb.dns_name}",
+                    "DB_HOST", "${aws_db_instance.nw_mysql.address}",
+                    "DB_USER", "${aws_db_instance.nw_mysql.username}",
+                    "DB_PASSWD", "${aws_db_instance.nw_mysql.password}",
+                    "KEY_DB_NAME", "${aws_db_instance.nw_mysql.name}",
+                    "MSG_DB_NAME", "msg_db")}"
+  depends_on = ["module.kgs-task"]
 }
 
 resource "aws_elb" "nw_elb" {
@@ -154,12 +151,4 @@ resource "aws_security_group" "db_sg" {
   lifecycle {
     create_before_destroy = true
   }
-}
-
-resource "aws_route53_record" "db" {
-  name = "db.note-whisperer.com"
-  type = "CNAME"
-  zone_id = "${var.route53_zone_id}"
-  ttl = "300"
-  records = ["${aws_db_instance.nw_mysql.address}"]
 }

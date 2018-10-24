@@ -1,7 +1,5 @@
 variable "fellow_name" {}
 
-variable "route53_zone_id" {}
-
 variable "ecr_url_kgs" {
   default = "889083053481.dkr.ecr.us-west-2.amazonaws.com/note-whisperer/kgs"
 }

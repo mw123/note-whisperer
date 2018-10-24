@@ -11,7 +11,7 @@
 > curl -d '{"message": "hello world"}' -X POST -H "Content-Type: application/json" nw-elb-primary-730274181.us-west-2.elb.amazonaws.com/post
 
 * To read:
-> curl -X GET <url>
+> curl -X GET \<url\>
 
 ## System Design (Initial Planning)
 

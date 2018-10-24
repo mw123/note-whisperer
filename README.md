@@ -5,6 +5,14 @@
 
 &nbsp;&nbsp;&nbsp;&nbsp;In this repo I build a service which provides self destructing messages. The user should be allowed to input text into a form. Once POSTED the system will then generate a random URL that can be used to share the note. If the random URL is viewed through GET, the URL will be "self destructed”, meaning subsequent GET to the same URL will return a 404.
 
+## Usage
+
+* To post a note:
+> curl -d '{"message": "hello world"}' -X POST -H "Content-Type: application/json" nw-elb-primary-730274181.us-west-2.elb.amazonaws.com/post
+
+* To read:
+> curl -X GET <url>
+
 ## System Design (Initial Planning)
 
 #### Capacity Estimation
@@ -58,9 +66,13 @@
 TBD
 
 ## Deployment
-
-TBD
-
+```
+1. git clone https://github.com/mw123/note-whisperer.git
+2. cd note-whisperer/terraform
+3. terraform init
+4. terraform plan -var fellow_name=<IAM keypair prefix> (e.g. If the .pem file is named "mw-IAM-keypair.pem", then fellow_name=mw)
+5. terraform apply -var fellow_name=<IAM keypair prefix>
+```
 ## Author
 
 * **Long Yu Wang** - [mw123](https://github.com/mw123)

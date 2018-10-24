@@ -8,7 +8,7 @@
 ## Demo
 
 * To post a note:
-> $ curl -d '{"message": "hello world"}' -X POST -H "Content-Type: application/json" nw-elb-primary-730274181.us-west-2.elb.amazonaws.com/post  
+> $ curl -d '{"message": "hello world"}' -X POST -H "Content-Type: application/json" nw-elb-primary-391815656.us-west-2.elb.amazonaws.com/post  
 > {"url": \<link\>}
 
 * To read:
@@ -43,12 +43,12 @@
 &nbsp;&nbsp;&nbsp;&nbsp;In the case of heavy POST traffic, it would be a lot more efficient to store some available URLs in a cache. However, in the current cacpacity estimation of 1 POST request per second, caching is not necessary.  
 
 #### Keys Database (key-db)
-&nbsp;&nbsp;&nbsp;&nbsp;This database stores all possible URL keys. Each URL is 5 letters, and there are 64^5 = ~1 billion keys. This amounts to 5GB of data. Each record will also use a byte to indicate whether the key has been used or not, so in total 6GiB of storage will be used, which is under AWS Free Tier quota.  
+&nbsp;&nbsp;&nbsp;&nbsp;This database stores all possible URL keys. Each URL is 5 letters, and there are 64^5 = ~1 billion keys. This amounts to 5GB of data. Each record will also use 4 bytes for auto-incrementing primary key, and a byte to indicate whether the key has been used or not, so in total ~10GiB of storage will be used, which is under AWS Free Tier quota.  
 &nbsp;&nbsp;&nbsp;&nbsp;With current traffic estimate of 1 POST request per second, there are enough unique keys for the server to run many years without replacement or needing to generate new keys. It is an overkill, but given the cheap price for storage, there is no issue regarding cost.  
 &nbsp;&nbsp;&nbsp;&nbsp;If performance were a major concern for the system, I would also deploy a stand-by replica for key-db failover. But at this stage only 1 instance will be deployed.  
 
 #### Messages Database (msg-db)
-&nbsp;&nbsp;&nbsp;&nbsp;This is where all private notes will be stored. The messages will be encrypted and accessible by URL key. Each URL will be deprecated if it is accessed once or has been stale for 1 hour. Each record contains 4 bytes for URL key, 3 kB for message, 4 bytes for timestamp, and 1 byte to indicate status (viewed or not). Based on current traffic estimation, there will be 300MB of new data each day. To stay under Free Tier quota at all times, the database will need cleaning service every 30 days. However, I will not implement the cleanup service at this stage.  
+&nbsp;&nbsp;&nbsp;&nbsp;This is where all private notes will be stored. The messages will be encrypted and accessible by URL key. Each msg_db record will be deleted if it is accessed once or has been stale for 1 hour. Each record contains 5 bytes for unique URL key, 3 kB for message, and 4 bytes for timestamp. Based on current traffic estimation, there will be 300MB of new data each day. To stay under Free Tier quota at all times, the database will need cleaning service every 30 days.    
 &nbsp;&nbsp;&nbsp;&nbsp;For the same reason as above, only 1 instance will be deployed.  
 
 #### Tech Stack

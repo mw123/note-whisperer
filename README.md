@@ -1,7 +1,7 @@
 # note-whisperer
 - Automatic service deployment for self-destructing messages 
 
-# latest working server DNS: nw-elb-primary-1470478462.us-west-2.elb.amazonaws.com
+# latest server DNS: nw-elb-primary-1470478462.us-west-2.elb.amazonaws.com
 
 ## Purpose
 
@@ -10,7 +10,7 @@
 ## Demo
 
 * To post a note:
-> $ curl -d '{"message": "hello world"}' -X POST -H "Content-Type: application/json" nw-elb-primary-391815656.us-west-2.elb.amazonaws.com/post  
+> $ curl -d '{"message": "hello world"}' -X POST -H "Content-Type: application/json" \<latest server DNS\>/post  
 > {"url": \<link\>}
 
 * To read:

@@ -1,6 +1,8 @@
 # note-whisperer
 - Automatic service deployment for self-destructing messages 
 
+# latest working server DNS: nw-elb-primary-1470478462.us-west-2.elb.amazonaws.com
+
 ## Purpose
 
 &nbsp;&nbsp;&nbsp;&nbsp;In this repo I build a service which provides self destructing messages. The user should be allowed to input text into a form. Once POSTED the system will then generate a random URL that can be used to share the note. If the random URL is viewed through GET, the URL will be "self destructed”, meaning subsequent GET to the same URL will return a 404.

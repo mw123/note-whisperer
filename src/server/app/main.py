@@ -2,6 +2,7 @@ from flask import Flask, request, json, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from config import *
 
+from passlib.hash import cisco_type7
 from datetime import datetime
 import random
 
@@ -59,13 +60,13 @@ def post():
             query.used = True
             db.session.commit()
 
-        data = req['message']
+        data = cisco_type7.hash(req['message'])
         new_msg = msg_db(query.url_key, data)
         db.session.add(new_msg)
         db.session.commit()
         
-        url = {'url': query.url_key}
-        return jsonify(url)
+        url = '/'.join('http:/',SERVER_HOST,'read',query.url_key)
+        return jsonify({'url': url})
     else:
         return not_supported(request.headers['Content-Type'])
 
@@ -75,7 +76,7 @@ def read(url):
     if not query:
         return not_found()
 
-    message = {'message': query.data}
+    message = {'message': cisco_type7.decode(query.data)}
     timestamp = query.date_created
     db.session.delete(query)
     db.session.commit()

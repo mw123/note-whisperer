@@ -36,10 +36,11 @@ def perm_string(word, iters=1000000):
 	return results
 
 db = MySQLdb.connect(host=DB_HOST, user=DB_USER, passwd=DB_PASSWD, 
-						db=DB_NAME, cursorclass=MySQLdb.cursors.DictCursor)  
+						db=KEY_DB_NAME, cursorclass=MySQLdb.cursors.DictCursor)  
 
 try:
 	with db.cursor() as cur:
+		cur.execute('CREATE DATABASE IF NOT EXISTS {} ;'.format(MSG_DB_NAME))
 		cur.execute('CREATE TABLE IF NOT EXISTS url_keys(id INT(11) AUTO_INCREMENT PRIMARY KEY, url_key CHAR(5), used BOOLEAN);')
 
 	key = "A+0.a"
